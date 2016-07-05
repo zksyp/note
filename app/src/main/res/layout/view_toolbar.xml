@@ -2,10 +2,60 @@
 <android.support.v7.widget.Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
+    android:background="#00796b"
     android:minHeight="?attr/actionBarSize"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
     app:titleTextColor="@color/white">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/left_btn"
+            android:layout_width="50dp"
+            android:layout_height="48dp"
+            android:layout_gravity="left"
+            android:scaleType="centerInside"
+            android:visibility="gone"
+            android:src="@drawable/topbar_icon_back"/>
+
+        <TextView
+            android:id="@+id/left_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            tools:text="便签"
+            android:padding="8dp"
+            android:textSize="24dp"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:gravity="center"/>
+
+        <ImageView
+            android:id="@+id/right_btn"
+            android:layout_width="50dp"
+            android:layout_height="48dp"
+            android:layout_gravity="right"
+            android:scaleType="centerInside"
+            android:src="@drawable/icon_tick"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/search_btn"
+            android:layout_width="50dp"
+            android:layout_height="48dp"
+            android:layout_gravity="right"
+            android:scaleType="center"
+            android:visibility="gone"
+            android:src="@drawable/ic_search"/>
+
+    </FrameLayout>
+
+
 </android.support.v7.widget.Toolbar>

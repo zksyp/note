@@ -3,7 +3,13 @@ package com.kaishen.notepaper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by kaishen on 16/7/1.
@@ -11,12 +17,38 @@ import android.widget.EditText;
 public class NoteEditActivity extends BaseActivity{
 
     private EditText mNoteEt;
+    private android.widget.Button mSaveBtn;
+    private DataSource ds = new DataSource(this);
+    private SimpleDateFormat formatter = new SimpleDateFormat ("yyyy年MM月dd日 HH:mm ");//获取当前系统时间
+    private ImageView mLeft;
+    private ImageView mRight;
+
+
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void afterOnCreate() {
         setContentView(R.layout.activity_edit);
         mNoteEt = (EditText) findViewById(R.id.et_note);
+        setToolLeftBtn(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        setToolRightBtn(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ds.open();
+                String id = ds.getCount() + 1 +"";
+                String content = mNoteEt.getText().toString();
+                Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+                String time = formatter.format(curDate);
+                ds.insertOrUpDateNote(id, content, time);
+                Intent intent = new Intent();
+                intent.setClass(NoteEditActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
         loadData();
         getEvent();
     }
@@ -27,7 +59,6 @@ public class NoteEditActivity extends BaseActivity{
 
     public void loadData() {
         Intent intent = getIntent();
-        DataSource ds = new DataSource(this);
         ds.open();
         String id = intent.getStringExtra("ID");
         NoteBean nb;
@@ -39,6 +70,7 @@ public class NoteEditActivity extends BaseActivity{
         else {
             mNoteEt.setText("");
             mNoteEt.setFocusable(true);
+            mNoteEt.setFocusableInTouchMode(true);
         }
     }
 }

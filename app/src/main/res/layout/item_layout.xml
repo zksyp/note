@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_margin="10dp"
+    android:background="@drawable/shape_border_line"
+    android:elevation="6dp"
     android:orientation="vertical">
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="sdafasf"/>
+
     <TextView
         android:id="@+id/tv_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="sdafasf"/>
+        android:singleLine="true"
+        android:lineSpacingMultiplier="1.2"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        tools:text="sdafasf" />
+
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="sdafasf"/>
+        android:layout_gravity="left|bottom"
+        android:padding="12dp"
+        android:textStyle="bold"
+        android:textColor="@color/light_grey"
+        android:textSize="10dp"
+        tools:text="sdafasf" />
 
-</LinearLayout>
+</FrameLayout>

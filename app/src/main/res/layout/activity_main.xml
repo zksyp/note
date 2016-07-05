@@ -5,25 +5,23 @@
     android:background="@color/white"
     android:orientation="vertical">
 
+    <include layout="@layout/view_toolbar"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_note"
+        android:padding="5dp"
+        android:elevation="4dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
-    <!--<com.kaishen.notepaper.FloatingActionButton-->
-        <!--android:id="@+id/fabButton"-->
-        <!--android:layout_width="56dp"-->
-        <!--android:layout_height="56dp"-->
-        <!--android:layout_gravity="bottom|right"-->
-        <!--android:layout_margin="16dp"-->
-        <!--android:textSize="24sp"-->
-        <!--android:layout_marginRight="20dp"-->
-        <!--android:layout_marginBottom="25dp" />-->
-
-    <Button
-        android:id="@+id/btn_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:text="编辑"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="16dp"
+        android:src="@drawable/icon_plus"
+        android:textSize="24sp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="25dp" />
 </FrameLayout>

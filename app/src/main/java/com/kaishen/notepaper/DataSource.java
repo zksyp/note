@@ -32,6 +32,7 @@ public class DataSource {
         mDataBase = mDBHelper.getWritableDatabase();
     }
 
+    //通过DBHelper实例插入数据
     private void insertNote(String id, String content, String time){
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_ID, id);
@@ -40,6 +41,7 @@ public class DataSource {
         mDataBase.insert(DBHelper.TABLE_NAME_NOTE_LIST, null, values);
     }
 
+    //通过DBHelper实例修改数据
     private void upDateNote(String id, String content, String time) {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_ID, id);
@@ -48,6 +50,7 @@ public class DataSource {
         mDataBase.update(DBHelper.TABLE_NAME_NOTE_LIST, values, DBHelper.COLUMN_ID + "=" + id, null);
     }
 
+    //通过id在数据库中找到数据
     public NoteBean getNoteOfId(String id){
         Cursor cursor = mDataBase.query(DBHelper.TABLE_NAME_NOTE_LIST, allColumnsForNote,
                 DBHelper.COLUMN_ID + "=" + id, null, null, null, null);
@@ -103,8 +106,18 @@ public class DataSource {
         return res;
     }
 
+    //通过DBHelper实例删除数据
     public void deleteNote(String id){
         mDataBase.delete(DBHelper.TABLE_NAME_NOTE_LIST, DBHelper.COLUMN_ID + "=" + id, null);
+    }
+
+    //获取表中数据的条数总数以便确定id
+    public int getCount()
+    {
+        Cursor cursor = mDataBase.query(
+                DBHelper.TABLE_NAME_NOTE_LIST, allColumnsForNote, null, null, null, null, null);
+        cursor.moveToFirst();
+        return cursor.getCount();
     }
 
 }
