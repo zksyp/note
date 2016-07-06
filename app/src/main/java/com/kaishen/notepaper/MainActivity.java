@@ -1,6 +1,7 @@
 package com.kaishen.notepaper;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.view.ActionMode;
@@ -25,11 +26,16 @@ public class MainActivity extends BaseActivity {
     public Set<Integer> positionSet = new HashSet<>();
     public static MainActivity instance;
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     protected void afterOnCreate() {
         instance = this;
         setContentView(R.layout.activity_main);
+        initHeaderView();
         mNoteRv = (RecyclerView) findViewById(R.id.rv_note);
         mFabBtn = (FloatingActionButton) findViewById(R.id.fabButton);
         loadData();

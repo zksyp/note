@@ -32,6 +32,10 @@ public abstract class BaseActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         afterOnCreate();
+
+    }
+
+    protected void initHeaderView(){
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         titleTv = (TextView)findViewById(R.id.titel_tv);
         countTv = (TextView)findViewById(R.id.count_tv);

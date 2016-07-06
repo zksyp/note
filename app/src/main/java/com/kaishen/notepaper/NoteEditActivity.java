@@ -27,6 +27,7 @@ public class NoteEditActivity extends BaseActivity {
     @Override
     protected void afterOnCreate() {
         setContentView(R.layout.activity_edit);
+        initHeaderView();
         mNoteEt = (EditText) findViewById(R.id.et_note);
         setToolLeftBtn(new View.OnClickListener() {
             @Override
