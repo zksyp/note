@@ -1,5 +1,8 @@
 package com.kaishen.notepaper;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +28,7 @@ public class MainActivity extends BaseActivity {
     private List<NoteBean> noteBeanList;
     private boolean state = false;
     private boolean isAllSelect = false;
+    private RecyclerView.OnScrollListener mScrollListener;
 
     public Set<Integer> positionSet = new HashSet<>();
     public static MainActivity instance;
@@ -42,19 +46,13 @@ public class MainActivity extends BaseActivity {
         mNoteRv = (RecyclerView) findViewById(R.id.rv_note);
         mFabBtn = (FloatingActionButton) findViewById(R.id.fabButton);
         loadData();
+        setOnScrollListener();
         commonMode("便签", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
-//        setTitleText("便签");
-//        setToolRightBtn("搜索", new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mNoteRv.setLayoutManager(linearLayoutManager);
@@ -79,12 +77,13 @@ public class MainActivity extends BaseActivity {
         DataSource dataSource = new DataSource(this);
         dataSource.open();
         noteBeanList = dataSource.getNoteList();
+        Log.e("note", noteBeanList.toString());
         mAdapter = new ListItemAdapter(this, noteBeanList);
         mNoteRv.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new ListItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if (state == true) {
+                if (state) {
                     addOrRemove(position);
                 } else {
                     Intent intent = new Intent();
@@ -97,6 +96,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onItemLongClick(View view, int position) {
+                animatorForGone();
                 resetView();
                 state = true;
                 selectedMode(new View.OnClickListener() {
@@ -110,7 +110,7 @@ public class MainActivity extends BaseActivity {
                         setSelectStateText("全选", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (isAllSelect = false) {
+                                if (!isAllSelect) {
                                     for (int i = 0; i < noteBeanList.size(); i++) {
                                         positionSet.add(i);
                                     }
@@ -145,6 +145,7 @@ public class MainActivity extends BaseActivity {
         }
 
         if (positionSet.size() == 0) {
+            animatorForVisible();
             resetView();
             commonMode("便签", new View.OnClickListener() {
                 @Override
@@ -158,4 +159,61 @@ public class MainActivity extends BaseActivity {
             mAdapter.notifyDataSetChanged();
         }
     }
+
+    /**
+     * 为RecyclerView设置下拉刷新及floatingActionButton的消失出现
+     */
+    private void setOnScrollListener() {
+        if (mNoteRv == null) {
+            return;
+        }
+        if (mScrollListener == null) {
+            mScrollListener = new RecyclerView.OnScrollListener() {
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    int y = dy;
+                    if(y != dy )
+                    {
+                        animatorForGone();
+                        y = dy;
+                    }
+                    else
+                    {
+                        animatorForVisible();
+                    }
+                }
+            };
+            mNoteRv.addOnScrollListener(mScrollListener);
+        }
+    }
+
+    /**
+     * 为floatingActionBar的出现消失设置动画效果
+     */
+    private void animatorForGone() {
+        Animator anim = AnimatorInflater.loadAnimator(this, R.animator.scale_gone);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                mFabBtn.setVisibility(View.GONE);
+            }
+        });
+        anim.setTarget(mFabBtn);
+        anim.start();
+    }
+
+    private void animatorForVisible() {
+        Animator anim = AnimatorInflater.loadAnimator(this, R.animator.scale_visible);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                mFabBtn.setVisibility(View.VISIBLE);
+            }
+        });
+        anim.setTarget(mFabBtn);
+        anim.start();
+    }
+
 }
