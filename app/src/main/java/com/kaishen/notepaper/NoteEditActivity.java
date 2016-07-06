@@ -14,15 +14,14 @@ import java.util.Date;
 /**
  * Created by kaishen on 16/7/1.
  */
-public class NoteEditActivity extends BaseActivity{
+public class NoteEditActivity extends BaseActivity {
 
     private EditText mNoteEt;
     private android.widget.Button mSaveBtn;
     private DataSource ds = new DataSource(this);
-    private SimpleDateFormat formatter = new SimpleDateFormat ("yyyy年MM月dd日 HH:mm ");//获取当前系统时间
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm ");//获取当前系统时间
     private ImageView mLeft;
     private ImageView mRight;
-
 
 
     @Override
@@ -38,15 +37,22 @@ public class NoteEditActivity extends BaseActivity{
         setToolRightBtn(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String id;
+                Intent intent = getIntent();
+                String getId = intent.getStringExtra("ID");
+                if (getId == null) {
+                    id = ds.getCount() + 1 + "";
+                } else {
+                    id = getId;
+                }
                 ds.open();
-                String id = ds.getCount() + 1 +"";
                 String content = mNoteEt.getText().toString();
                 Date curDate = new Date(System.currentTimeMillis());//获取当前时间
                 String time = formatter.format(curDate);
                 ds.insertOrUpDateNote(id, content, time);
-                Intent intent = new Intent();
+                Intent setIntent = new Intent();
                 intent.setClass(NoteEditActivity.this, MainActivity.class);
-                startActivity(intent);
+                startActivity(setIntent);
             }
         });
         loadData();
@@ -63,11 +69,10 @@ public class NoteEditActivity extends BaseActivity{
         String id = intent.getStringExtra("ID");
         NoteBean nb;
         nb = ds.getNoteOfId(id);
-        if(nb != null) {
+        if (nb != null) {
             mNoteEt.setText(nb.getNote());
             mNoteEt.setFocusableInTouchMode(true);
-        }
-        else {
+        } else {
             mNoteEt.setText("");
             mNoteEt.setFocusable(true);
             mNoteEt.setFocusableInTouchMode(true);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -7,21 +7,25 @@
 
     <include layout="@layout/view_toolbar"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_note"
-        android:padding="5dp"
-        android:elevation="4dp"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_note"
+            android:padding="5dp"
+            android:elevation="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabButton"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom|center"
-        android:layout_margin="16dp"
-        android:src="@drawable/icon_plus"
-        android:textSize="24sp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="25dp" />
-</FrameLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="16dp"
+            android:src="@drawable/icon_plus"
+            android:textSize="24sp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="25dp" />
+    </FrameLayout>
+</LinearLayout>

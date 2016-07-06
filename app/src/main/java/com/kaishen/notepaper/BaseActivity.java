@@ -43,6 +43,11 @@ public abstract class BaseActivity extends AppCompatActivity{
         iv.setOnClickListener(listener);
     }
 
+    protected void setCountText(String count){
+        TextView tv = (TextView)findViewById(R.id.count_tv);
+        tv.setVisibility(View.VISIBLE);
+        tv.setText(count);
+    }
     protected void setToolRightBtn(View.OnClickListener listener){
         ImageView iv = (ImageView)findViewById(R.id.right_btn);
         iv.setVisibility(View.VISIBLE);
@@ -55,4 +60,10 @@ public abstract class BaseActivity extends AppCompatActivity{
         iv.setOnClickListener(listener);
     }
 
+    protected void setSelectStateText(String state, View.OnClickListener listener){
+        TextView tv = (TextView)findViewById(R.id.select_state_tv);
+        tv.setVisibility(View.VISIBLE);
+        tv.setText(state);
+        tv.setOnClickListener(listener);
+    }
 }

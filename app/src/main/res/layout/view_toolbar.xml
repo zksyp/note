@@ -22,7 +22,7 @@
             android:layout_height="48dp"
             android:layout_gravity="left"
             android:scaleType="centerInside"
-            android:visibility="gone"
+            android:visibility="visible"
             android:src="@drawable/topbar_icon_back"/>
 
         <TextView
@@ -36,6 +36,16 @@
             android:textColor="@color/white"
             android:visibility="gone"
             android:gravity="center"/>
+        <TextView
+            android:id="@+id/count_tv"
+            android:layout_width="50dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_gravity="left"
+            android:visibility="gone"
+            tools:text="2"/>
 
         <ImageView
             android:id="@+id/right_btn"
@@ -45,6 +55,15 @@
             android:scaleType="centerInside"
             android:src="@drawable/icon_tick"
             android:visibility="gone"/>
+        <TextView
+            android:id="@+id/select_state_tv"
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:textSize="24dp"
+            android:layout_gravity="right"
+            android:gravity="center"
+            tools:text="全选"
+            android:layout_marginRight="40dp"/>
 
         <ImageView
             android:id="@+id/search_btn"
@@ -52,7 +71,7 @@
             android:layout_height="48dp"
             android:layout_gravity="right"
             android:scaleType="center"
-            android:visibility="gone"
+            android:visibility="visible"
             android:src="@drawable/ic_search"/>
 
     </FrameLayout>
