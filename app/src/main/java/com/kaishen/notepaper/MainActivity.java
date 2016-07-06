@@ -23,6 +23,8 @@ public class MainActivity extends BaseActivity {
     private FloatingActionButton mFabBtn;
     private List<NoteBean> noteBeanList;
     private boolean state = false;
+    private boolean isAllSelect = false;
+
     public Set<Integer> positionSet = new HashSet<>();
     public static MainActivity instance;
 
@@ -39,13 +41,19 @@ public class MainActivity extends BaseActivity {
         mNoteRv = (RecyclerView) findViewById(R.id.rv_note);
         mFabBtn = (FloatingActionButton) findViewById(R.id.fabButton);
         loadData();
-        setTitleText("便签");
-        setToolRightBtn("搜索", new View.OnClickListener() {
+        commonMode("便签", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+//        setTitleText("便签");
+//        setToolRightBtn("搜索", new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mNoteRv.setLayoutManager(linearLayoutManager);
@@ -70,10 +78,6 @@ public class MainActivity extends BaseActivity {
         DataSource dataSource = new DataSource(this);
         dataSource.open();
         noteBeanList = dataSource.getNoteList();
-//        if(noteBeanList.get(0) != null)
-//        {
-//            Log.e("noteinfo", noteBeanList.get(0).getNote());
-//        }
         mAdapter = new ListItemAdapter(this, noteBeanList);
         mNoteRv.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new ListItemAdapter.OnItemClickListener() {
@@ -92,28 +96,44 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onItemLongClick(View view, int position) {
+                resetView();
                 state = true;
-                if (positionSet.size() != noteBeanList.size()) {
-                    setSelectStateText("全选", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            for (int i = 0; i < noteBeanList.size(); i++) {
-                                positionSet.add(i);
+                selectedMode(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setSelectStateText("全选", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (isAllSelect = false) {
+                                    for (int i = 0; i < noteBeanList.size(); i++) {
+                                        positionSet.add(i);
+                                    }
+                                    setSelectStateText("取消全选");
+                                    isAllSelect = true;
+                                } else {
+                                    positionSet.clear();
+                                    isAllSelect = false;
+                                    setSelectStateText("全选");
+
+                                }
                             }
-                        }
-                    });
-                } else {
-                    setSelectStateText("取消全选", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            positionSet = new HashSet<Integer>();
-                        }
-                    });
-                }
+                        });
+                    }
+                }, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
             }
-        }
-        );
-}
+        });
+
+    }
 
 
     public void addOrRemove(int position) {
@@ -124,12 +144,18 @@ public class MainActivity extends BaseActivity {
         }
 
         if (positionSet.size() == 0) {
+            resetView();
+            commonMode("便签", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
             state = false;
         } else {
             setCountText(positionSet.size() + "");
             mAdapter.notifyDataSetChanged();
         }
     }
-
 
 }

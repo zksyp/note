@@ -29,13 +29,13 @@ public class NoteEditActivity extends BaseActivity {
         setContentView(R.layout.activity_edit);
         initHeaderView();
         mNoteEt = (EditText) findViewById(R.id.et_note);
-        setToolLeftBtn(new View.OnClickListener() {
+        resetView();
+        editMode(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
-        });
-        setToolRightBtn("保存", new View.OnClickListener() {
+        }, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String id;
@@ -52,10 +52,31 @@ public class NoteEditActivity extends BaseActivity {
                 String time = formatter.format(curDate);
                 ds.insertOrUpDateNote(id, content, time);
                 Intent setIntent = new Intent();
-                intent.setClass(NoteEditActivity.this, MainActivity.class);
+                setIntent.setClass(NoteEditActivity.this, MainActivity.class);
                 startActivity(setIntent);
             }
         });
+//        setToolRightBtn("保存", new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String id;
+//                Intent intent = getIntent();
+//                String getId = intent.getStringExtra("ID");
+//                if (getId == null) {
+//                    id = ds.getCount() + 1 + "";
+//                } else {
+//                    id = getId;
+//                }
+//                ds.open();
+//                String content = mNoteEt.getText().toString();
+//                Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+//                String time = formatter.format(curDate);
+//                ds.insertOrUpDateNote(id, content, time);
+//                Intent setIntent = new Intent();
+//                intent.setClass(NoteEditActivity.this, MainActivity.class);
+//                startActivity(setIntent);
+//            }
+//        });
         loadData();
         getEvent();
     }
