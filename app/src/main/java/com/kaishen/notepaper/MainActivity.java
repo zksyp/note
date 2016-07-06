@@ -33,8 +33,8 @@ public class MainActivity extends BaseActivity {
         mNoteRv = (RecyclerView) findViewById(R.id.rv_note);
         mFabBtn = (FloatingActionButton) findViewById(R.id.fabButton);
         loadData();
-        setToolLeftText("便签");
-        setSearchBtn(new View.OnClickListener() {
+        setTitleText("便签");
+        setToolRightBtn("搜索", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

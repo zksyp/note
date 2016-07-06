@@ -34,7 +34,7 @@ public class NoteEditActivity extends BaseActivity {
 
             }
         });
-        setToolRightBtn(new View.OnClickListener() {
+        setToolRightBtn("保存", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String id;

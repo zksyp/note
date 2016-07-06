@@ -26,7 +26,7 @@
             android:src="@drawable/topbar_icon_back"/>
 
         <TextView
-            android:id="@+id/left_tv"
+            android:id="@+id/titel_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
@@ -54,6 +54,15 @@
             android:layout_gravity="right"
             android:scaleType="centerInside"
             android:src="@drawable/icon_tick"
+            android:visibility="gone" />
+        <ImageView
+            android:id="@+id/delete_btn"
+            android:layout_width="50dp"
+            android:layout_height="48dp"
+            android:layout_gravity="right"
+            android:scaleType="centerInside"
+            android:src="@drawable/topbar_icon_delete"
+            android:layout_marginRight="40dp"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/select_state_tv"
@@ -63,16 +72,8 @@
             android:layout_gravity="right"
             android:gravity="center"
             tools:text="全选"
+            android:visibility="gone"
             android:layout_marginRight="40dp"/>
-
-        <ImageView
-            android:id="@+id/search_btn"
-            android:layout_width="50dp"
-            android:layout_height="48dp"
-            android:layout_gravity="right"
-            android:scaleType="center"
-            android:visibility="visible"
-            android:src="@drawable/ic_search"/>
 
     </FrameLayout>
 
