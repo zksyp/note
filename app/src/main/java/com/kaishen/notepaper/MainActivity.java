@@ -7,13 +7,9 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +24,7 @@ public class MainActivity extends BaseActivity {
     private List<NoteBean> noteBeanList;
     private boolean state = false;
     private boolean isAllSelect = false;
+    private boolean isShow = true;
     private RecyclerView.OnScrollListener mScrollListener;
 
     public Set<Integer> positionSet = new HashSet<>();
@@ -76,8 +73,14 @@ public class MainActivity extends BaseActivity {
     public void loadData() {
         DataSource dataSource = new DataSource(this);
         dataSource.open();
-        noteBeanList = dataSource.getNoteList();
-        Log.e("note", noteBeanList.toString());
+        noteBeanList = dataSource.getSortNoteList();
+//        List<NoteBean> test = dataSource.getSortNoteList();
+//        for(int i = 0;i < test.size(); i++)
+//        {
+//            Log.e("sortlist", test.get(i).getTime());
+//
+//        }
+//        Log.e("note", noteBeanList.toString());
         mAdapter = new ListItemAdapter(this, noteBeanList);
         mNoteRv.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new ListItemAdapter.OnItemClickListener() {
@@ -97,6 +100,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onItemLongClick(View view, int position) {
                 animatorForGone();
+                isShow = false;
                 resetView();
                 state = true;
                 selectedMode(new View.OnClickListener() {
@@ -146,6 +150,7 @@ public class MainActivity extends BaseActivity {
 
         if (positionSet.size() == 0) {
             animatorForVisible();
+            isShow = true;
             resetView();
             commonMode("便签", new View.OnClickListener() {
                 @Override
@@ -174,12 +179,12 @@ public class MainActivity extends BaseActivity {
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
                     int y = dy;
-                    if(y != dy )
+                    if(y != dy && isShow )
                     {
                         animatorForGone();
                         y = dy;
                     }
-                    else
+                    else if(y == dy && isShow)
                     {
                         animatorForVisible();
                     }

@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -42,7 +44,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
     }
 
     @Override
-    public void onBindViewHolder(ListItemAdapter.ItemViewHolder holder, final int position) {
+    public void onBindViewHolder(final ListItemAdapter.ItemViewHolder holder, final int position) {
         holder.noteTv.setText(noteList.get(position).getNote());
         holder.timeTv.setText(noteList.get(position).getTime());
         positionSet = MainActivity.instance.positionSet;
@@ -55,16 +57,33 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
             });
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
-                    if (positionSet.contains(position)) {
-                        v.setBackgroundColor(mContext.getResources().getColor(R.color.grey));
-                        v.findViewById(R.id.checkbox).setVisibility(View.VISIBLE);
-                        v.findViewById(R.id.checkbox).setSelected(true);
+                public boolean onLongClick(final View v) {
+//                    if(positionSet.size() != 0) holder.checkBox.setVisibility(View.VISIBLE);
+//                    else holder.checkBox.setVisibility(View.GONE);
+                    holder.checkBox.setVisibility(View.VISIBLE);
+                    holder.checkBox.setTag(position);
+                    if (positionSet != null) {
+                        holder.checkBox.setChecked((positionSet.contains(position)));
+//                        holder.frameLayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey));
                     } else {
-                        v.setBackgroundColor(mContext.getResources().getColor(R.color.white));
-                        v.findViewById(R.id.checkbox).setVisibility(View.VISIBLE);
-                        v.findViewById(R.id.checkbox).setSelected(false);
+                        holder.checkBox.setChecked(false);
+//                        holder.frameLayout.setBackgroundColor(mContext.getResources().getColor(R.color.white));
                     }
+
+                    holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                            if (isChecked) {
+                                holder.checkBox.setVisibility(View.VISIBLE);
+                                holder.frameLayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey));
+                            }else
+                            {
+                                holder.checkBox.setVisibility(View.GONE);
+                                holder.frameLayout.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+                            }
+                        }
+                    });
                     onItemClickListener.onItemLongClick(v, position);
                     return false;
                 }
@@ -81,11 +100,15 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
 
         private TextView noteTv;
         private TextView timeTv;
+        private AppCompatCheckBox checkBox;
+        private FrameLayout frameLayout;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             noteTv = (TextView) itemView.findViewById(R.id.tv_note);
             timeTv = (TextView) itemView.findViewById(R.id.tv_time);
+            checkBox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
+            frameLayout = (FrameLayout) itemView.findViewById(R.id.item_fl);
         }
     }
 

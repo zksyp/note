@@ -120,4 +120,26 @@ public class DataSource {
         return cursor.getCount();
     }
 
+    //按修改时间降序排序获得NoteList
+    public List<NoteBean> getSortNoteList(){
+        Cursor cursor = mDataBase.query(
+                DBHelper.TABLE_NAME_NOTE_LIST, allColumnsForNote, null, null, null, null,
+                DBHelper.COLUMN_TIME +" DESC");
+        cursor.moveToFirst();
+        List<NoteBean> res = new ArrayList<>();
+        if (cursor.getCount() == 0) return res;
+        do {
+            String id = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_ID));
+            String content = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CONTENT));
+            String time = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_TIME));
+            NoteBean note = new NoteBean();
+            note.setId(id);
+            note.setNote(content);
+            note.setTime(time);
+            res.add(note);
+        } while (cursor.moveToNext());
+        cursor.close();
+        return res;
+    }
+
 }
