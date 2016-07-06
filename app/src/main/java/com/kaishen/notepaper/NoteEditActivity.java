@@ -3,6 +3,8 @@ package com.kaishen.notepaper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,6 +55,7 @@ public class NoteEditActivity extends BaseActivity {
                 ds.insertOrUpDateNote(id, content, time);
                 Intent setIntent = new Intent();
                 setIntent.setClass(NoteEditActivity.this, MainActivity.class);
+                NoteEditActivity.this.finish();
                 startActivity(setIntent);
             }
         });
@@ -99,5 +102,32 @@ public class NoteEditActivity extends BaseActivity {
             mNoteEt.setFocusable(true);
             mNoteEt.setFocusableInTouchMode(true);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                Intent setIntent = new Intent();
+                setIntent.setClass(NoteEditActivity.this, MainActivity.class);
+                NoteEditActivity.this.finish();
+                startActivity(setIntent);
+                break;
+
+            default:
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if(keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            NoteEditActivity.this.finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
