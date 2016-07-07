@@ -27,7 +27,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
     private Context mContext;
     private OnItemClickListener onItemClickListener;
     private Set<Integer> positionSet;
-    private boolean  mChecked = false;
+    private boolean  mCheck = false;
 
     public ListItemAdapter(Context context, List<NoteBean> noteList) {
         mContext = context;
@@ -45,18 +45,17 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
     }
 
     public void setChecked(boolean mChecked) {
-        this.mChecked = mChecked;
+        this.mCheck = mChecked;
     }
 
     @Override
     public void onBindViewHolder(final ListItemAdapter.ItemViewHolder holder, final int position) {
         holder.noteTv.setText(noteList.get(position).getNote());
         holder.timeTv.setText(noteList.get(position).getTime());
+
         positionSet = MainActivity.instance.positionSet;
-        if(mChecked)
-        {
-            holder.checkBox.setVisibility(View.VISIBLE);
-        }
+
+
         if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -68,33 +67,33 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
                 @Override
                 public boolean onLongClick(final View v) {
                     onItemClickListener.onItemLongClick(v, position);
+                    if(mCheck)
+                    {
+                        holder.checkBox.setVisibility(View.VISIBLE);
+                        positionSet.add(position);
+                    }else
+                    {
+                        holder.checkBox.setVisibility(View.GONE);
+
+                    }
+//                    holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                        @Override
+//                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//
+//                            if (isChecked) {
+//                                holder.checkBox.setVisibility(View.VISIBLE);
+//                                holder.frameLayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey));
+//                            }else
+//                            {
+//                                holder.checkBox.setVisibility(View.GONE);
+//                                holder.frameLayout.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+//                            }
+//                        }
+//                    });
                     return false;
                 }
             });
         }
-        if(mChecked)
-        {
-            holder.checkBox.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            holder.checkBox.setVisibility(View.GONE);
-
-        }
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (isChecked) {
-                    holder.checkBox.setVisibility(View.VISIBLE);
-                    holder.frameLayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey));
-                }else
-                {
-                    holder.checkBox.setVisibility(View.GONE);
-                    holder.frameLayout.setBackgroundColor(mContext.getResources().getColor(R.color.white));
-                }
-            }
-        });
     }
 
     @Override
