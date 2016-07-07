@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import java.util.HashSet;
@@ -47,7 +48,9 @@ public class MainActivity extends BaseActivity {
         commonMode("便签", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
             }
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -74,10 +77,10 @@ public class MainActivity extends BaseActivity {
         DataSource dataSource = new DataSource(this);
         dataSource.open();
         noteBeanList = dataSource.getSortNoteList();
-//        List<NoteBean> test = dataSource.getSortNoteList();
+//        List<NoteBean> test = dataSource.getSearchNoteList("的");
 //        for(int i = 0;i < test.size(); i++)
 //        {
-//            Log.e("sortlist", test.get(i).getTime());
+//            Log.e("searchlist", test.get(i).getTime());
 //
 //        }
 //        Log.e("note", noteBeanList.toString());
@@ -88,6 +91,7 @@ public class MainActivity extends BaseActivity {
             public void onItemClick(View view, int position) {
                 if (state) {
                     addOrRemove(position);
+
                 } else {
                     Intent intent = new Intent();
                     String id = noteBeanList.get(position).getId();
@@ -99,6 +103,8 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onItemLongClick(View view, int position) {
+                mAdapter.setChecked(true);
+                mAdapter.notifyDataSetChanged();
                 animatorForGone();
                 isShow = false;
                 resetView();
@@ -106,7 +112,17 @@ public class MainActivity extends BaseActivity {
                 selectedMode(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        animatorForVisible();
+                        isShow = true;
+                        positionSet.clear();
+                        resetView();
+                        commonMode("便签", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
 
+                            }
+                        });
+                        state = false;
                     }
                 }, new View.OnClickListener() {
                     @Override
@@ -179,13 +195,10 @@ public class MainActivity extends BaseActivity {
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
                     int y = dy;
-                    if(y != dy && isShow )
-                    {
+                    if (y != dy && isShow) {
                         animatorForGone();
                         y = dy;
-                    }
-                    else if(y == dy && isShow)
-                    {
+                    } else if (y == dy && isShow) {
                         animatorForVisible();
                     }
                 }

@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
         android:checked="true"
+        android:clickable="false"
         android:visibility="gone"/>
     <TextView
         android:id="@+id/tv_note"

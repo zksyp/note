@@ -86,6 +86,7 @@ public class DataSource {
 
     }
 
+    //获取以ID排序的数据
     public List<NoteBean> getNoteList(){
         Cursor cursor = mDataBase.query(
                 DBHelper.TABLE_NAME_NOTE_LIST, allColumnsForNote, null, null, null, null, null);
@@ -142,4 +143,26 @@ public class DataSource {
         return res;
     }
 
+    //以内容相关的模糊查询并按时间降序排序
+    public List<NoteBean> getSearchNoteList(String sea){
+
+        Cursor cursor = mDataBase.query(
+                DBHelper.TABLE_NAME_NOTE_LIST, allColumnsForNote, DBHelper.COLUMN_CONTENT
+                        + " LIKE '%" + sea +"%'", null, null, null, DBHelper.COLUMN_TIME +" DESC");
+        cursor.moveToFirst();
+        List<NoteBean> res = new ArrayList<>();
+        if (cursor.getCount() == 0) return res;
+        do {
+            String id = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_ID));
+            String content = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CONTENT));
+            String time = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_TIME));
+            NoteBean note = new NoteBean();
+            note.setId(id);
+            note.setNote(content);
+            note.setTime(time);
+            res.add(note);
+        } while (cursor.moveToNext());
+        cursor.close();
+        return res;
+    }
 }

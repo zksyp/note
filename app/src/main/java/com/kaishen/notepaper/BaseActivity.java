@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected ImageView leftBtn;
     protected ImageView rightBtn;
     protected ImageView deleteBtn;
+    protected EditText searchTv;
 
 
     @Override
@@ -44,6 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         selectStateTv = (TextView) findViewById(R.id.select_state_tv);
         rightBtn = (ImageView) findViewById(R.id.right_btn);
         deleteBtn = (ImageView) findViewById(R.id.delete_btn);
+        searchTv = (EditText) findViewById(R.id.search_tv);
 
         resetView();
         setSupportActionBar(mToolBar);
@@ -56,6 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         selectStateTv.setVisibility(View.GONE);
         deleteBtn.setVisibility(View.GONE);
         rightBtn.setVisibility(View.GONE);
+        searchTv.setVisibility(View.GONE);
     }
 
     protected void afterOnCreate() {
@@ -109,21 +113,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         deleteBtn.setOnClickListener(listener);
     }
 
-    protected void setToolRightBtn(String funtion, View.OnClickListener listener) {
+    protected ImageView setToolRightBtn(int resId) {
         rightBtn.setVisibility(View.VISIBLE);
-        deleteBtn.setVisibility(View.GONE);
 
-        if ("搜索".equals(funtion)) {
-            rightBtn.setImageResource(R.drawable.ic_search);
-            rightBtn.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        } else if ("保存".equals(funtion)) {
-            rightBtn.setImageResource(R.drawable.icon_tick);
-            rightBtn.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        } else {
-            rightBtn.setImageResource(R.drawable.topbar_icon_delete);
-            rightBtn.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        }
-        rightBtn.setOnClickListener(listener);
+        rightBtn.setImageResource(resId);
+//        rightBtn.setOnClickListener(listener);
+
+        return rightBtn;
     }
 
     protected void commonMode(String title, View.OnClickListener rightListener) {
@@ -154,8 +150,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
-    protected void viewMode(View.OnClickListener leftListener, View.OnClickListener deleteListener) {
-        leftBtn.setVisibility(View.VISIBLE);
+    protected void viewMode(View.OnClickListener deleteListener) {
         deleteBtn.setVisibility(View.VISIBLE);
 
         ActionBar actionBar = getSupportActionBar();
@@ -163,13 +158,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         deleteBtn.setOnClickListener(deleteListener);
     }
 
-    protected void editMode(View.OnClickListener leftListner, View.OnClickListener rightListener) {
-        leftBtn.setVisibility(View.VISIBLE);
+    protected void editMode( View.OnClickListener rightListener) {
         rightBtn.setVisibility(View.VISIBLE);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
         rightBtn.setImageResource(R.drawable.icon_tick);
         rightBtn.setOnClickListener(rightListener);
+    }
+
+    protected EditText searchMode(){
+        searchTv.setVisibility(View.VISIBLE);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
+        return searchTv;
     }
 }

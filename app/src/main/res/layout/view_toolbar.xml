@@ -20,8 +20,18 @@
             android:layout_width="50dp"
             android:layout_height="48dp"
             android:layout_gravity="left"
-            android:scaleType="centerInside"
-            android:visibility="gone" />
+            android:scaleType="center"
+            tools:src="@drawable/topbar_icon_back"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/search_tv"
+            android:layout_width="295dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_gravity="center_vertical"
+            android:hint="搜索便签"
+            android:visibility="visible"/>
 
         <TextView
             android:id="@+id/title_tv"
@@ -73,7 +83,7 @@
             android:layout_height="48dp"
             android:layout_gravity="right"
             android:scaleType="centerInside"
-            android:src="@drawable/icon_tick"
+            tools:src="@drawable/topbar_icon_close"
             android:visibility="gone" />
 
     </FrameLayout>
