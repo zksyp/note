@@ -27,7 +27,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
     private Context mContext;
     private OnItemClickListener onItemClickListener;
     private Set<Integer> positionSet;
-    private boolean  mCheck = false;
+    private boolean mSelect = false;
 
     public ListItemAdapter(Context context, List<NoteBean> noteList) {
         mContext = context;
@@ -44,8 +44,8 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
         this.onItemClickListener = onItemClickListener;
     }
 
-    public void setChecked(boolean mChecked) {
-        this.mCheck = mChecked;
+    public void setSelect(boolean select) {
+        this.mSelect = select;
     }
 
     @Override
@@ -60,36 +60,30 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onItemClick(v, position);
+                    if(mSelect){
+                        if (MainActivity.instance.positionSet.contains(position)) {
+                            holder.checkBox.setVisibility(View.GONE);
+                            holder.frameLayout.setBackgroundResource(R.drawable.ripple_bg);
+                            MainActivity.instance.positionSet.remove(position);
+                        } else {
+                            holder.checkBox.setVisibility(View.VISIBLE);
+                            holder.frameLayout.setBackgroundResource(0);
+                            MainActivity.instance.positionSet.add(position);
+                        }
+                        if(MainActivity.instance.positionSet.size() == 0)
+                        {
+                            mSelect = false;
+                        }
+                    }
+                    else{
+                        onItemClickListener.onItemClick(v, position);
+                    }
                 }
             });
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(final View v) {
                     onItemClickListener.onItemLongClick(v, position);
-                    if(mCheck)
-                    {
-                        holder.checkBox.setVisibility(View.VISIBLE);
-                        positionSet.add(position);
-                    }else
-                    {
-                        holder.checkBox.setVisibility(View.GONE);
-
-                    }
-//                    holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                        @Override
-//                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//
-//                            if (isChecked) {
-//                                holder.checkBox.setVisibility(View.VISIBLE);
-//                                holder.frameLayout.setBackgroundColor(mContext.getResources().getColor(R.color.grey));
-//                            }else
-//                            {
-//                                holder.checkBox.setVisibility(View.GONE);
-//                                holder.frameLayout.setBackgroundColor(mContext.getResources().getColor(R.color.white));
-//                            }
-//                        }
-//                    });
                     return false;
                 }
             });
@@ -98,7 +92,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
 
     @Override
     public int getItemCount() {
-        if(noteList != null) return noteList.size();
+        if (noteList != null) return noteList.size();
         else return 0;
     }
 

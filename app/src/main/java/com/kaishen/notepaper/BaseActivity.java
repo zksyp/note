@@ -144,6 +144,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(false);
         leftBtn.setImageResource(R.drawable.topbar_icon_close);
         leftBtn.setOnClickListener(leftListener);
+        selectStateTv.setText("全选");
         selectStateTv.setOnClickListener(selectedListener);
         rightBtn.setImageResource(R.drawable.topbar_icon_delete);
         rightBtn.setOnClickListener(rightListener);

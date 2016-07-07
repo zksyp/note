@@ -103,7 +103,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onItemLongClick(View view, int position) {
-                mAdapter.setChecked(true);
+                mAdapter.setSelect(true);
                 mAdapter.notifyDataSetChanged();
                 animatorForGone();
                 isShow = false;
