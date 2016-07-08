@@ -29,7 +29,7 @@
             android:layout_width="295dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="left"
             android:hint="搜索便签"
             android:visibility="visible"/>
 
