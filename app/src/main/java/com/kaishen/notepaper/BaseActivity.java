@@ -26,6 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected ImageView leftBtn;
     protected ImageView rightBtn;
     protected ImageView deleteBtn;
+    protected ImageView shareBtn;
     protected EditText searchTv;
 
 
@@ -46,6 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         selectStateTv = (TextView) findViewById(R.id.select_state_tv);
         rightBtn = (ImageView) findViewById(R.id.right_btn);
         deleteBtn = (ImageView) findViewById(R.id.delete_btn);
+        shareBtn = (ImageView) findViewById(R.id.share_btn);
         searchTv = (EditText) findViewById(R.id.search_tv);
 
         resetView();
@@ -151,12 +153,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
-    protected void viewMode(View.OnClickListener deleteListener) {
+    protected void viewMode(View.OnClickListener deleteListener, View.OnClickListener shareListener) {
         deleteBtn.setVisibility(View.VISIBLE);
+        shareBtn.setVisibility(View.VISIBLE);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
         deleteBtn.setOnClickListener(deleteListener);
+        shareBtn.setOnClickListener(shareListener);
     }
 
     protected void editMode( View.OnClickListener rightListener) {

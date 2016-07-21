@@ -86,6 +86,15 @@
             tools:src="@drawable/topbar_icon_close"
             android:visibility="gone" />
 
+        <ImageView
+            android:id="@+id/share_btn"
+            android:layout_width="50dp"
+            android:layout_height="48dp"
+            android:layout_gravity="right"
+            android:scaleType="centerInside"
+            tools:src="@drawable/ic_share_black"
+            android:visibility="gone" />
+
     </FrameLayout>
 
 

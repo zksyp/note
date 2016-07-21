@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -31,29 +32,65 @@ public class NoteEditActivity extends BaseActivity {
         setContentView(R.layout.activity_edit);
         initHeaderView();
         mNoteEt = (EditText) findViewById(R.id.et_note);
-        viewMode(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(NoteEditActivity.this).setTitle("提示")
-                        .setMessage("将会删除此便签").setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                ds.open();
-                                ds.deleteNote(getId);
-                                Intent intent = new Intent();
-                                intent.setClass(NoteEditActivity.this, MainActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-                dialog.show();
-            }
-        });
+        Intent intent = getIntent();
+        if("NEW".equals(intent.getStringExtra("TYPE"))){
+            editMode(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String id;
+                    Intent intent = getIntent();
+                    String getId = intent.getStringExtra("ID");
+                    if (getId == null) {
+                        id = ds.getCount() + 1 + "";
+                    } else {
+                        id = getId;
+                    }
+                    ds.open();
+                    String content = mNoteEt.getText().toString();
+                    Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+                    String time = formatter.format(curDate);
+                    ds.insertOrUpDateNote(id, content, time);
+                    Intent setIntent = new Intent();
+                    setIntent.setClass(NoteEditActivity.this, MainActivity.class);
+                    NoteEditActivity.this.finish();
+                    startActivity(setIntent);
+                }
+            });
+        }else
+        {
+            viewMode(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(NoteEditActivity.this).setTitle("提示")
+                            .setMessage("将会删除此便签").setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    ds.open();
+                                    ds.deleteNote(getId);
+                                    Intent intent = new Intent();
+                                    intent.setClass(NoteEditActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+                    dialog.show();
+                }
+            }, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    File f
+
+                }
+            });
+        }
+
         mNoteEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -97,7 +134,6 @@ public class NoteEditActivity extends BaseActivity {
             mNoteEt.setText(nb.getNote());
             mNoteEt.setFocusableInTouchMode(true);
         } else {
-            mNoteEt.setText("本地无文件");
             mNoteEt.setFocusable(true);
             mNoteEt.setFocusableInTouchMode(true);
         }
@@ -107,10 +143,7 @@ public class NoteEditActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent setIntent = new Intent();
-                setIntent.setClass(NoteEditActivity.this, MainActivity.class);
                 NoteEditActivity.this.finish();
-                startActivity(setIntent);
                 break;
             default:
         }

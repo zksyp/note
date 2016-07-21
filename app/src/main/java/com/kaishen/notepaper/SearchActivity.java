@@ -64,23 +64,6 @@ public class SearchActivity extends BaseActivity {
                 }
             });
         }
-//        mSearchTv = searchMode();
-//        mClearBtn = setToolRightBtn(R.drawable.topbar_icon_close);
-//        if(!mSearchTv.getText().toString().equals(""))
-//        {
-//            mClearBtn.setVisibility(View.VISIBLE);
-//            mClearBtn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mSearchTv.setText("");
-//                    mSearchRv.setAdapter(null);
-//                    mSearchAdapter.notifyDataSetChanged();
-//                }
-//            });
-//        }else
-//        {
-//            mClearBtn.setVisibility(View.GONE);
-//        }
         loadData();
     }
 
@@ -98,16 +81,17 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() > 0){
+                if (s.length() > 0) {
                     rightBtn.setVisibility(View.VISIBLE);
                     rightBtn.setImageResource(R.drawable.topbar_icon_close);
+                    rightBtn.setScaleType(ImageView.ScaleType.CENTER);
                     rightBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             searchTv.setText("");
                             rightBtn.setVisibility(View.GONE);
                             mSearchRv.setAdapter(null);
-                            mSearchAdapter.notifyDataSetChanged();
+//                            mSearchAdapter.notifyDataSetChanged();
                         }
                     });
                     ds.open();
@@ -120,6 +104,7 @@ public class SearchActivity extends BaseActivity {
                             Intent intent = new Intent();
                             String id = searchNoteBeanList.get(position).getId();
                             intent.putExtra("ID", id);
+                            intent.putExtra("TYPE", "EDIT");
                             intent.setClass(SearchActivity.this, NoteEditActivity.class);
                             startActivity(intent);
                         }
@@ -129,44 +114,26 @@ public class SearchActivity extends BaseActivity {
 
                         }
                     });
+                }else if(s.length() == 0){
+                    searchTv.setText("");
+                    rightBtn.setVisibility(View.GONE);
+                    mSearchRv.setAdapter(null);
+                    mSearchAdapter.notifyDataSetChanged();
                 }
-
             }
+
             @Override
             public void afterTextChanged(Editable s) {
 
             }
         });
-//        if (!searchTv.getText().toString().equals("")) {
-//            searchNoteBeanList = ds.getSearchNoteList(searchTv.getText().toString());
-//            mSearchAdapter = new ListItemAdapter(this, searchNoteBeanList);
-//            mSearchRv.setAdapter(mSearchAdapter);
-//            mSearchAdapter.setOnItemClickListener(new ListItemAdapter.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(View view, int position) {
-//                    Intent intent = new Intent();
-//                    String id = searchNoteBeanList.get(position).getId();
-//                    intent.putExtra("ID", id);
-//                    intent.setClass(SearchActivity.this, NoteEditActivity.class);
-//                    startActivity(intent);
-//                }
-//
-//                @Override
-//                public void onItemLongClick(View view, int position) {
-//
-//                }
-//            });
-//        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent setIntent = new Intent();
-                setIntent.setClass(SearchActivity.this, MainActivity.class);
                 SearchActivity.this.finish();
-                startActivity(setIntent);
                 break;
             default:
         }

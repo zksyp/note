@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.kaishen.notepaper"
-        minSdkVersion 16
+        minSdkVersion 20
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -36,4 +36,6 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
     compile 'de.psdev.licensesdialog:licensesdialog:1.8.0'
+    compile 'jp.wasabeef:recyclerview-animators:2.2.3'
+    compile 'com.shamanland:fab:0.0.8'
 }

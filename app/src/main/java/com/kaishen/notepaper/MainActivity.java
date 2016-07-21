@@ -5,16 +5,22 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import com.shamanland.fab.FloatingActionButton;
+import com.shamanland.fab.ShowHideOnScroll;
+
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
 
 public class MainActivity extends BaseActivity {
@@ -27,6 +33,8 @@ public class MainActivity extends BaseActivity {
     private boolean isAllSelect = false;
     private boolean isShow = true;
     private RecyclerView.OnScrollListener mScrollListener;
+    private View.OnTouchListener mTouchListener;
+    private Set<String> idSet = new HashSet<>();
 
     public Set<Integer> positionSet = new HashSet<>();
     public static MainActivity instance;
@@ -45,6 +53,7 @@ public class MainActivity extends BaseActivity {
         mFabBtn = (FloatingActionButton) findViewById(R.id.fabButton);
         loadData();
         setOnScrollListener();
+//        setOnTouchListener();
         commonMode("便签", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,11 +65,12 @@ public class MainActivity extends BaseActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mNoteRv.setLayoutManager(linearLayoutManager);
+        mNoteRv.setOnTouchListener(new ShowHideOnScroll(mFabBtn));
         mFabBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.putExtra("ID", noteBeanList.size() + 1);
+                intent.putExtra("TYPE","NEW");
                 intent.setClass(MainActivity.this, NoteEditActivity.class);
                 startActivity(intent);
             }
@@ -85,7 +95,10 @@ public class MainActivity extends BaseActivity {
 //        }
 //        Log.e("note", noteBeanList.toString());
         mAdapter = new ListItemAdapter(this, noteBeanList);
-        mNoteRv.setAdapter(mAdapter);
+        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
+        alphaAdapter.setDuration(1000);
+        alphaAdapter.setInterpolator(new OvershootInterpolator());
+        mNoteRv.setAdapter(alphaAdapter);
         mAdapter.setOnItemClickListener(new ListItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -96,6 +109,7 @@ public class MainActivity extends BaseActivity {
                     Intent intent = new Intent();
                     String id = noteBeanList.get(position).getId();
                     intent.putExtra("ID", id);
+                    intent.putExtra("TYPE", "EDIT");
                     intent.setClass(MainActivity.this, NoteEditActivity.class);
                     startActivity(intent);
                 }
@@ -171,7 +185,9 @@ public class MainActivity extends BaseActivity {
             commonMode("便签", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent();
+                    intent.setClass(MainActivity.this, SearchActivity.class);
+                    startActivity(intent);
                 }
             });
             state = false;
@@ -181,6 +197,35 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
+//    public void setOnTouchListener() {
+//        if(mNoteRv == null){
+//            return;
+//        }
+//        if(mTouchListener == null){
+//            mTouchListener = new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    if (MotionEvent.ACTION_DOWN == event.getAction())
+//                    {
+//                        animatorForGone();
+//                    }
+//                    if(MotionEvent.ACTION_MOVE == event.getAction())
+//                    {
+//                        animatorForGone();
+//                    }
+//                    if(MotionEvent.ACTION_UP == event.getAction())
+//                    {
+//                        animatorForVisible();
+//                    }
+//                    return false;
+//                }
+//            };
+//        }
+//        mNoteRv.setOnTouchListener(mTouchListener);
+//
+//    }
+
     /**
      * 为RecyclerView设置下拉刷新及floatingActionButton的消失出现
      */
@@ -188,23 +233,23 @@ public class MainActivity extends BaseActivity {
         if (mNoteRv == null) {
             return;
         }
-        if (mScrollListener == null) {
-            mScrollListener = new RecyclerView.OnScrollListener() {
-
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    int y = dy;
-                    if (y != dy && isShow) {
-                        animatorForGone();
-                        y = dy;
-                    } else if (y == dy && isShow) {
-                        animatorForVisible();
-                    }
-                }
-            };
-            mNoteRv.addOnScrollListener(mScrollListener);
-        }
+//        if (mScrollListener == null) {
+//            mScrollListener = new RecyclerView.OnScrollListener() {
+//
+//                @Override
+//                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                    super.onScrolled(recyclerView, dx, dy);
+//                    int y = dy;
+//                    if (y != dy && isShow) {
+//                        animatorForGone();
+//                        y = dy;
+//                    } else if (y == dy && isShow) {
+//                        animatorForVisible();
+//                    }
+//                }
+//            };
+//            mNoteRv.addOnScrollListener(mScrollListener);
+//        }
     }
 
     /**
