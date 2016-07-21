@@ -4,7 +4,7 @@
     android:id="@+id/item_fl"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:layout_margin="10dp"
+    android:layout_margin="13dp"
     android:background="@drawable/shape_border_line"
     android:backgroundTint="@color/white"
     android:elevation="6dp"
