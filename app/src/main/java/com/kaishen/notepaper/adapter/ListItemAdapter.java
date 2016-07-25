@@ -1,22 +1,20 @@
-package com.kaishen.notepaper;
+package com.kaishen.notepaper.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.ColorRes;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.kaishen.notepaper.entry.NoteBean;
+import com.kaishen.notepaper.R;
+import com.kaishen.notepaper.activity.MainActivity;
+
 import java.util.List;
 import java.util.Set;
-
-import butterknife.OnItemClick;
 
 /**
  * Created by kaishen on 16/6/30.
@@ -28,6 +26,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
     private OnItemClickListener onItemClickListener;
     private Set<Integer> positionSet;
     private boolean mSelect = false;
+    private ListItemAdapter.ItemViewHolder mHolder;
 
     public ListItemAdapter(Context context, List<NoteBean> noteList) {
         mContext = context;
@@ -48,46 +47,74 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
         this.mSelect = select;
     }
 
+    public void setBackground(){
+        mHolder.checkBox.setVisibility(View.VISIBLE);
+        mHolder.frameLayout.setBackgroundResource(R.drawable.ripple_bg);
+    }
+
+    public void resetBackground(){
+        mHolder.checkBox.setVisibility(View.GONE);
+        mHolder.frameLayout.setBackgroundResource(0);
+    }
     @Override
     public void onBindViewHolder(final ListItemAdapter.ItemViewHolder holder, final int position) {
+
+        mHolder = holder;
         holder.noteTv.setText(noteList.get(position).getNote());
         holder.timeTv.setText(noteList.get(position).getTime());
 
-        positionSet = MainActivity.instance.positionSet;
+//        positionSet = MainActivity.instance.positionSet;
 
 
-        if (onItemClickListener != null) {
+        if(onItemClickListener != null){
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mSelect){
-                        if (MainActivity.instance.positionSet.contains(position)) {
-                            holder.checkBox.setVisibility(View.GONE);
-                            holder.frameLayout.setBackgroundResource(R.drawable.ripple_bg);
-                            MainActivity.instance.positionSet.remove(position);
-                        } else {
-                            holder.checkBox.setVisibility(View.VISIBLE);
-                            holder.frameLayout.setBackgroundResource(0);
-                            MainActivity.instance.positionSet.add(position);
-                        }
-                        if(MainActivity.instance.positionSet.size() == 0)
-                        {
-                            mSelect = false;
-                        }
-                    }
-                    else{
-                        onItemClickListener.onItemClick(v, position);
-                    }
+                    onItemClickListener.onItemClick(v, position);
                 }
             });
+
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public boolean onLongClick(final View v) {
+                public boolean onLongClick(View v) {
                     onItemClickListener.onItemLongClick(v, position);
                     return false;
                 }
             });
         }
+//        if (onItemClickListener != null) {
+//            holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if(mSelect){
+//                        if (MainActivity.instance.positionSet.contains(position)) {
+//                            holder.checkBox.setVisibility(View.GONE);
+//                            holder.frameLayout.setBackgroundResource(R.drawable.ripple_bg);
+//                            MainActivity.instance.positionSet.remove(position);
+//                        } else {
+//                            holder.checkBox.setVisibility(View.VISIBLE);
+//                            holder.frameLayout.setBackgroundResource(0);
+//                            MainActivity.instance.positionSet.add(position);
+//                        }
+//                        if(MainActivity.instance.positionSet.size() == 0)
+//                        {
+//                            mSelect = false;
+//                        }
+//                    }
+//                    else{
+//                        onItemClickListener.onItemClick(v, position);
+//                    }
+//                }
+//            });
+//            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(final View v) {
+//                    onItemClickListener.onItemLongClick(v, position);
+//                    return false;
+//                }
+//            });
+//        }
     }
 
     @Override

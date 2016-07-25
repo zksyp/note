@@ -1,4 +1,4 @@
-package com.kaishen.notepaper;
+package com.kaishen.notepaper.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.gson.Gson;
+import com.kaishen.notepaper.entry.NoteBean;
 
 import java.util.ArrayList;
 import java.util.List;

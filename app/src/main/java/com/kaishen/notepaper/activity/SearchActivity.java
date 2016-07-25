@@ -1,22 +1,26 @@
-package com.kaishen.notepaper;
+package com.kaishen.notepaper.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.sax.StartElementListener;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.kaishen.notepaper.adapter.ListItemAdapter;
+import com.kaishen.notepaper.entry.NoteBean;
+import com.kaishen.notepaper.R;
+import com.kaishen.notepaper.db.DataSource;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +30,7 @@ public class SearchActivity extends BaseActivity {
 
     private RecyclerView mSearchRv;
     private ListItemAdapter mSearchAdapter;
-    private List<NoteBean> searchNoteBeanList;
+    private List<NoteBean> searchNoteBeanList = new ArrayList<>();
     DataSource ds = new DataSource(this);
     private EditText mSearchTv;
     private ImageView mClearBtn;
@@ -43,11 +47,13 @@ public class SearchActivity extends BaseActivity {
         setContentView(R.layout.activity_search);
         initHeaderView();
         mSearchRv = (RecyclerView) findViewById(R.id.rv_note);
+        mSearchAdapter = new ListItemAdapter(SearchActivity.this, searchNoteBeanList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mSearchRv.setLayoutManager(linearLayoutManager);
         searchTv.setVisibility(View.VISIBLE);
         searchTv.setBackground(null);
+        mSearchRv.setAdapter(mSearchAdapter);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
         if (searchTv.getText().toString().equals("")) {
@@ -90,14 +96,15 @@ public class SearchActivity extends BaseActivity {
                         public void onClick(View v) {
                             searchTv.setText("");
                             rightBtn.setVisibility(View.GONE);
-                            mSearchRv.setAdapter(null);
-//                            mSearchAdapter.notifyDataSetChanged();
+//                            searchTv.setInputType(InputType.TYPE_NULL);
+                            searchNoteBeanList.clear();
+                            mSearchAdapter.notifyDataSetChanged();
                         }
                     });
                     ds.open();
-                    searchNoteBeanList = ds.getSearchNoteList(searchTv.getText().toString());
-                    mSearchAdapter = new ListItemAdapter(SearchActivity.this, searchNoteBeanList);
-                    mSearchRv.setAdapter(mSearchAdapter);
+                    searchNoteBeanList.clear();
+                    searchNoteBeanList.addAll(ds.getSearchNoteList(searchTv.getText().toString()));
+                    mSearchAdapter.notifyDataSetChanged();
                     mSearchAdapter.setOnItemClickListener(new ListItemAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, int position) {
@@ -114,10 +121,11 @@ public class SearchActivity extends BaseActivity {
 
                         }
                     });
-                }else if(s.length() == 0){
-                    searchTv.setText("");
+                }
+                else if(s.length() == 0){
                     rightBtn.setVisibility(View.GONE);
-                    mSearchRv.setAdapter(null);
+                    searchNoteBeanList.clear();
+//                    searchTv.setInputType(InputType.TYPE_NULL);
                     mSearchAdapter.notifyDataSetChanged();
                 }
             }

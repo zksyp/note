@@ -1,22 +1,23 @@
-package com.kaishen.notepaper;
+package com.kaishen.notepaper.activity;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.kaishen.notepaper.entry.NoteBean;
+import com.kaishen.notepaper.R;
+import com.kaishen.notepaper.db.DataSource;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -32,7 +33,6 @@ public class NoteEditActivity extends BaseActivity {
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm ");//获取当前系统时间
     private String getId;
     private NoteBean nb;
-    private boolean isChange = false;
 
     @Override
     protected void afterOnCreate() {
@@ -40,32 +40,17 @@ public class NoteEditActivity extends BaseActivity {
         initHeaderView();
         mNoteEt = (EditText) findViewById(R.id.et_note);
         Intent intent = getIntent();
-        if("NEW".equals(intent.getStringExtra("TYPE"))){
+        if ("NEW".equals(intent.getStringExtra("TYPE"))) {
+            mNoteEt.setFocusable(true);
+            mNoteEt.setFocusableInTouchMode(true);
+            mNoteEt.requestFocus();
             editMode(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mNoteEt.setCursorVisible(true);
-                    String id;
-                    Intent intent = getIntent();
-                    getId = intent.getStringExtra("ID");
-                    if (getId == null) {
-                        id = ds.getCount() + 1 + "";
-                    } else {
-                        id = getId;
-                    }
-                    ds.open();
-                    String content = mNoteEt.getText().toString();
-                    Date curDate = new Date(System.currentTimeMillis());//获取当前时间
-                    String time = formatter.format(curDate);
-                    ds.insertOrUpDateNote(id, content, time);
-                    Intent setIntent = new Intent();
-                    setIntent.setClass(NoteEditActivity.this, MainActivity.class);
-                    NoteEditActivity.this.finish();
-                    startActivity(setIntent);
+                    checkSave();
                 }
             });
-        }else
-        {
+        } else {
             resetView();
             viewMode(new View.OnClickListener() {
                 @Override
@@ -92,7 +77,7 @@ public class NoteEditActivity extends BaseActivity {
             }, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    shareMsg(NoteEditActivity.this, "分享", "", nb.getNote(),"");
+                    shareMsg(NoteEditActivity.this, "分享至", "", nb.getNote(), "");
                 }
             });
         }
@@ -105,32 +90,7 @@ public class NoteEditActivity extends BaseActivity {
                     editMode(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(mNoteEt.getText().toString().equals("")){
-                                Intent setIntent = new Intent();
-                                setIntent.setClass(NoteEditActivity.this, MainActivity.class);
-                                NoteEditActivity.this.finish();
-                                startActivity(setIntent);
-                            }
-                            else
-                            {
-                                String id;
-                                Intent intent = getIntent();
-                                getId = intent.getStringExtra("ID");
-                                if (getId == null) {
-                                    id = ds.getCount() + 1 + "";
-                                } else {
-                                    id = getId;
-                                }
-                                ds.open();
-                                String content = mNoteEt.getText().toString();
-                                Date curDate = new Date(System.currentTimeMillis());//获取当前时间
-                                String time = formatter.format(curDate);
-                                ds.insertOrUpDateNote(id, content, time);
-                                Intent setIntent = new Intent();
-                                setIntent.setClass(NoteEditActivity.this, MainActivity.class);
-                                NoteEditActivity.this.finish();
-                                startActivity(setIntent);
-                            }
+                            checkSave();
                         }
                     });
                 }
@@ -166,60 +126,20 @@ public class NoteEditActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        mNoteEt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                isChange = true;
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(!isChange){
-                NoteEditActivity.this.finish();
-            }
-            else
-            {
-                String id;
-                Intent intent = getIntent();
-                String getId = intent.getStringExtra("ID");
-                if (getId == null) {
-                    id = ds.getCount() + 1 + "";
-                } else {
-                    id = getId;
-                }
-                ds.open();
-                String content = mNoteEt.getText().toString();
-                Date curDate = new Date(System.currentTimeMillis());//获取当前时间
-                String time = formatter.format(curDate);
-                ds.insertOrUpDateNote(id, content, time);
-                Toast.makeText(NoteEditActivity.this, "便签已保存", Toast.LENGTH_SHORT ).show();
-                Intent setIntent = new Intent();
-                setIntent.setClass(NoteEditActivity.this, MainActivity.class);
-                NoteEditActivity.this.finish();
-                startActivity(setIntent);
-            }
+            checkSave();
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    public static void shareMsg(Context context, String activityTitle, String msgTitle, String msgText, String imgPath){
+    public static void shareMsg(Context context, String activityTitle, String msgTitle, String msgText, String imgPath) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        if(imgPath == null || imgPath.equals("")){
+        if (imgPath == null || imgPath.equals("")) {
             intent.setType("text/plain");
-        }else{
+        } else {
             File f = new File(imgPath);
-            if(f != null && f.exists() && f.isFile()){
+            if (f != null && f.exists() && f.isFile()) {
                 intent.setType("image/*");
                 Uri u = Uri.fromFile(f);
                 intent.putExtra(Intent.EXTRA_STREAM, u);
@@ -230,4 +150,33 @@ public class NoteEditActivity extends BaseActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(Intent.createChooser(intent, activityTitle));
     }
+
+    public void checkSave(){
+        if (mNoteEt.getText().toString().equals("")) {
+            Intent setIntent = new Intent();
+            setIntent.setClass(NoteEditActivity.this, MainActivity.class);
+            NoteEditActivity.this.finish();
+            startActivity(setIntent);
+        } else {
+            String id;
+            Intent intent = getIntent();
+            getId = intent.getStringExtra("ID");
+            if (getId == null) {
+                id = ds.getCount() + 1 + "";
+            } else {
+                id = getId;
+            }
+            ds.open();
+            String content = mNoteEt.getText().toString();
+            Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+            String time = formatter.format(curDate);
+            ds.insertOrUpDateNote(id, content, time);
+            Intent setIntent = new Intent();
+            Toast.makeText(NoteEditActivity.this, "便签已保存", Toast.LENGTH_SHORT).show();
+            setIntent.setClass(NoteEditActivity.this, MainActivity.class);
+            NoteEditActivity.this.finish();
+            startActivity(setIntent);
+        }
+    }
+
 }

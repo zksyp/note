@@ -1,4 +1,4 @@
-package com.kaishen.notepaper;
+package com.kaishen.notepaper.activity;
 
 import android.graphics.drawable.Drawable;
 import android.media.TimedText;
@@ -13,6 +13,8 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.kaishen.notepaper.R;
 
 /**
  * Created by kaishen on 16/6/30.

@@ -1,14 +1,19 @@
-package com.kaishen.notepaper;
+package com.kaishen.notepaper.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import com.shamanland.fab.FloatingActionButton;
-import com.shamanland.fab.ShowHideOnScroll;
+
+import com.kaishen.notepaper.adapter.ListItemAdapter;
+import com.kaishen.notepaper.entry.NoteBean;
+import com.kaishen.notepaper.R;
+import com.kaishen.notepaper.db.DataSource;
+import com.kaishen.notepaper.utils.ScaleDownShowBehavior;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -63,7 +68,6 @@ public class MainActivity extends BaseActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mNoteRv.setLayoutManager(linearLayoutManager);
-        mNoteRv.setOnTouchListener(new ShowHideOnScroll(mFabBtn));
         mFabBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,18 +89,13 @@ public class MainActivity extends BaseActivity {
         DataSource dataSource = new DataSource(this);
         dataSource.open();
         noteBeanList = dataSource.getSortNoteList();
-//        List<NoteBean> test = dataSource.getSearchNoteList("的");
-//        for(int i = 0;i < test.size(); i++)
-//        {
-//            Log.e("searchlist", test.get(i).getTime());
-//
-//        }
-//        Log.e("note", noteBeanList.toString());
         mAdapter = new ListItemAdapter(this, noteBeanList);
-        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
-        alphaAdapter.setDuration(1000);
-        alphaAdapter.setInterpolator(new OvershootInterpolator());
-        mNoteRv.setAdapter(alphaAdapter);
+//        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
+//        alphaAdapter.setDuration(1000);
+//        alphaAdapter.setInterpolator(new OvershootInterpolator());
+//        mNoteRv.setAdapter(alphaAdapter);
+        mNoteRv.setAdapter(mAdapter);
+
         mAdapter.setOnItemClickListener(new ListItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -172,8 +171,22 @@ public class MainActivity extends BaseActivity {
     public void addOrRemove(int position) {
         if (positionSet.contains(position)) {
             positionSet.remove(position);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.resetBackground();
+                    mAdapter.notify();
+                }
+            });
         } else {
             positionSet.add(position);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.setBackground();
+                    mAdapter.notify();
+                }
+            });
         }
 
         if (positionSet.size() == 0) {
@@ -231,23 +244,22 @@ public class MainActivity extends BaseActivity {
         if (mNoteRv == null) {
             return;
         }
-//        if (mScrollListener == null) {
-//            mScrollListener = new RecyclerView.OnScrollListener() {
-//
-//                @Override
-//                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                    super.onScrolled(recyclerView, dx, dy);
-//                    int y = dy;
-//                    if (y != dy && isShow) {
-//                        animatorForGone();
-//                        y = dy;
-//                    } else if (y == dy && isShow) {
-//                        animatorForVisible();
-//                    }
-//                }
-//            };
-//            mNoteRv.addOnScrollListener(mScrollListener);
-//        }
+        if (mScrollListener == null) {
+            mScrollListener = new RecyclerView.OnScrollListener() {
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    int y = dy;
+                    if (y != dy && isShow) {
+                        animatorForGone();
+                    } else if (y == dy && isShow) {
+                        animatorForVisible();
+                    }
+                }
+            };
+            mNoteRv.addOnScrollListener(mScrollListener);
+        }
     }
 
     /**

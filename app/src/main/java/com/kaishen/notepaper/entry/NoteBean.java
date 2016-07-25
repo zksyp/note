@@ -1,4 +1,4 @@
-package com.kaishen.notepaper;
+package com.kaishen.notepaper.entry;
 
 /**
  * Created by kaishen on 16/6/30.

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">NotePaper</string>
+    <string name="scale_down_show_behavior">com.kaishen.notepaper.utils.ScaleDownShowBehavior</string>
 </resources>
