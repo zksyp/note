@@ -1,4 +1,4 @@
-package com.kaishen.notepaper.entry;
+package com.kaishen.notepaper.entity;
 
 /**
  * Created by kaishen on 16/6/30.
@@ -8,6 +8,7 @@ public class NoteBean {
     private String id;
     private String note;
     private String time;
+    private boolean isChosen;
 
     public String getId() {
         return id;
@@ -31,5 +32,13 @@ public class NoteBean {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public boolean isChosen() {
+        return isChosen;
+    }
+
+    public void setChosen(boolean chosen) {
+        isChosen = chosen;
     }
 }

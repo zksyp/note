@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -16,7 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.kaishen.notepaper.adapter.ListItemAdapter;
-import com.kaishen.notepaper.entry.NoteBean;
+import com.kaishen.notepaper.entity.NoteBean;
 import com.kaishen.notepaper.R;
 import com.kaishen.notepaper.db.DataSource;
 

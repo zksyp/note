@@ -96,12 +96,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         countTv.setText(count);
     }
 
-    protected void setSelectStateText(String state, View.OnClickListener listener) {
-        selectStateTv.setVisibility(View.VISIBLE);
-        deleteBtn.setVisibility(View.GONE);
-        selectStateTv.setText(state);
-        selectStateTv.setOnClickListener(listener);
-    }
+//    protected void setSelectStateText(String state, View.OnClickListener listener) {
+//        selectStateTv.setVisibility(View.VISIBLE);
+//        deleteBtn.setVisibility(View.GONE);
+//        selectStateTv.setText(state);
+//        selectStateTv.setOnClickListener(listener);
+//    }
 
     protected void setSelectStateText(String state) {
         selectStateTv.setText(state);
@@ -132,8 +132,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(false);
         rightBtn.setImageResource(R.drawable.ic_search_black);
-        rightBtn.setScaleX((float)0.6);
-        rightBtn.setScaleY((float)0.6);
         rightBtn.setOnClickListener(rightListener);
     }
 

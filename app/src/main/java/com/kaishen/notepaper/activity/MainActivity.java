@@ -7,23 +7,19 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.kaishen.notepaper.adapter.ListItemAdapter;
-import com.kaishen.notepaper.entry.NoteBean;
+import com.kaishen.notepaper.entity.NoteBean;
 import com.kaishen.notepaper.R;
 import com.kaishen.notepaper.db.DataSource;
-import com.kaishen.notepaper.utils.ScaleDownShowBehavior;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
 
 public class MainActivity extends BaseActivity {
@@ -89,6 +85,9 @@ public class MainActivity extends BaseActivity {
         DataSource dataSource = new DataSource(this);
         dataSource.open();
         noteBeanList = dataSource.getSortNoteList();
+        for(int i = 0; i < noteBeanList.size(); i++){
+            noteBeanList.get(i).setChosen(false);
+        }
         mAdapter = new ListItemAdapter(this, noteBeanList);
 //        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
 //        alphaAdapter.setDuration(1000);
@@ -113,12 +112,14 @@ public class MainActivity extends BaseActivity {
             }
 
             @Override
-            public void onItemLongClick(View view, int position) {
+            public void onItemLongClick(View view, final int position) {
                 mAdapter.setSelect(true);
                 mAdapter.notifyDataSetChanged();
+                positionSet.clear();
                 animatorForGone();
                 isShow = false;
                 resetView();
+                addOrRemove(position);
                 state = true;
                 selectedMode(new View.OnClickListener() {
                     @Override
@@ -138,23 +139,41 @@ public class MainActivity extends BaseActivity {
                 }, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        setSelectStateText("全选", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (!isAllSelect) {
-                                    for (int i = 0; i < noteBeanList.size(); i++) {
-                                        positionSet.add(i);
-                                    }
-                                    setSelectStateText("取消全选");
-                                    isAllSelect = true;
-                                } else {
-                                    positionSet.clear();
-                                    isAllSelect = false;
-                                    setSelectStateText("全选");
-
-                                }
+                        if (!isAllSelect) {
+                            for (int i = 0; i < noteBeanList.size(); i++) {
+                                positionSet.add(position);
+                                noteBeanList.get(position).setChosen(true);
+                                mAdapter.notifyDataSetChanged();
                             }
-                        });
+                            setCountText(positionSet.size() + "");
+                            setSelectStateText("取消全选");
+
+                            isAllSelect = true;
+                        } else {
+                            for (int i = 0; i < noteBeanList.size(); i++) {
+                                positionSet.remove(i);
+                                noteBeanList.get(position).setChosen(false);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                            animatorForVisible();
+                            isShow = true;
+                            resetView();
+                            commonMode("便签", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent();
+                                    intent.setClass(MainActivity.this, SearchActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+                            state = false;
+                        }
+//                        setSelectStateText("取消全选", new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//
+//                            }
+//                        });
                     }
                 }, new View.OnClickListener() {
                     @Override
@@ -168,25 +187,15 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    public void addOrRemove(int position) {
+    public void addOrRemove(final int position) {
         if (positionSet.contains(position)) {
             positionSet.remove(position);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.resetBackground();
-                    mAdapter.notify();
-                }
-            });
+            noteBeanList.get(position).setChosen(false);
+            mAdapter.notifyDataSetChanged();
         } else {
             positionSet.add(position);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.setBackground();
-                    mAdapter.notify();
-                }
-            });
+            noteBeanList.get(position).setChosen(true);
+            mAdapter.notifyDataSetChanged();
         }
 
         if (positionSet.size() == 0) {
@@ -205,6 +214,13 @@ public class MainActivity extends BaseActivity {
         } else {
             setCountText(positionSet.size() + "");
             mAdapter.notifyDataSetChanged();
+            if(positionSet.size() == noteBeanList.size()){
+                isAllSelect = true;
+                setSelectStateText("取消全选");
+            }else
+            {
+                isAllSelect = false;
+            }
         }
     }
 

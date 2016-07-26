@@ -5,17 +5,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.kaishen.notepaper.entry.NoteBean;
+import com.kaishen.notepaper.entity.NoteBean;
 import com.kaishen.notepaper.R;
 import com.kaishen.notepaper.db.DataSource;
 

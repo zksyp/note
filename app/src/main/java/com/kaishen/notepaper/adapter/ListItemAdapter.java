@@ -9,9 +9,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.kaishen.notepaper.entry.NoteBean;
+import com.kaishen.notepaper.entity.NoteBean;
 import com.kaishen.notepaper.R;
-import com.kaishen.notepaper.activity.MainActivity;
 
 import java.util.List;
 import java.util.Set;
@@ -24,9 +23,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
     private List<NoteBean> noteList;
     private Context mContext;
     private OnItemClickListener onItemClickListener;
-    private Set<Integer> positionSet;
     private boolean mSelect = false;
-    private ListItemAdapter.ItemViewHolder mHolder;
 
     public ListItemAdapter(Context context, List<NoteBean> noteList) {
         mContext = context;
@@ -47,30 +44,40 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
         this.mSelect = select;
     }
 
-    public void setBackground(){
-        mHolder.checkBox.setVisibility(View.VISIBLE);
-        mHolder.frameLayout.setBackgroundResource(R.drawable.ripple_bg);
-    }
-
-    public void resetBackground(){
-        mHolder.checkBox.setVisibility(View.GONE);
-        mHolder.frameLayout.setBackgroundResource(0);
-    }
+//    public void setBackground(){
+//
+//        mHolder.checkBox.setVisibility(View.VISIBLE);
+//        mHolder.frameLayout.setBackgroundResource(R.drawable.ripple_bg);
+//    }
+//
+//    public void resetBackground(){
+//        mHolder.checkBox.setVisibility(View.GONE);
+//        mHolder.frameLayout.setBackgroundResource(0);
+//    }
     @Override
     public void onBindViewHolder(final ListItemAdapter.ItemViewHolder holder, final int position) {
 
-        mHolder = holder;
+
         holder.noteTv.setText(noteList.get(position).getNote());
         holder.timeTv.setText(noteList.get(position).getTime());
-
-//        positionSet = MainActivity.instance.positionSet;
-
+        if(noteList.get(position).isChosen())
+        {
+            holder.checkBox.setVisibility(View.VISIBLE);
+            holder.frameLayout.setBackgroundResource(0);
+            holder.noteTv.setTextColor(mContext.getResources().getColor(R.color.cover_text));
+        }else
+        {
+            holder.checkBox.setVisibility(View.GONE);
+            holder.noteTv.setTextColor(mContext.getResources().getColor(R.color.black));
+            holder.frameLayout.setBackgroundResource(R.drawable.ripple_bg);
+        }
 
         if(onItemClickListener != null){
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     onItemClickListener.onItemClick(v, position);
                 }
             });
@@ -78,6 +85,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ItemVi
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+
                     onItemClickListener.onItemLongClick(v, position);
                     return false;
                 }
