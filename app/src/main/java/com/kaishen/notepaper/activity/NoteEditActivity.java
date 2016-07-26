@@ -63,9 +63,7 @@ public class NoteEditActivity extends BaseActivity {
                                     dialog.dismiss();
                                     ds.open();
                                     ds.deleteNote(getId);
-                                    Intent intent = new Intent();
-                                    intent.setClass(NoteEditActivity.this, MainActivity.class);
-                                    startActivity(intent);
+                                    NoteEditActivity.this.finish();
                                 }
                             });
                     dialog.show();

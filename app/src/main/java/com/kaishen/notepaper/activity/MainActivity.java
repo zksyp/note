@@ -3,6 +3,7 @@ package com.kaishen.notepaper.activity;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
@@ -13,11 +14,14 @@ import com.kaishen.notepaper.db.DataSource;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +32,7 @@ public class MainActivity extends BaseActivity {
     private ListItemAdapter mAdapter;
     private FloatingActionButton mFabBtn;
     private List<NoteBean> noteBeanList;
+    private DataSource dataSource = new DataSource(this);
     private boolean state = false;
     private boolean isAllSelect = false;
     private boolean isShow = true;
@@ -82,7 +87,6 @@ public class MainActivity extends BaseActivity {
     }
 
     public void loadData() {
-        DataSource dataSource = new DataSource(this);
         dataSource.open();
         noteBeanList = dataSource.getSortNoteList();
         for(int i = 0; i < noteBeanList.size(); i++){
@@ -141,20 +145,19 @@ public class MainActivity extends BaseActivity {
                     public void onClick(View v) {
                         if (!isAllSelect) {
                             for (int i = 0; i < noteBeanList.size(); i++) {
-                                positionSet.add(position);
-                                noteBeanList.get(position).setChosen(true);
-                                mAdapter.notifyDataSetChanged();
+                                positionSet.add(i);
+                                noteBeanList.get(i).setChosen(true);
                             }
+                            mAdapter.notifyDataSetChanged();
                             setCountText(positionSet.size() + "");
                             setSelectStateText("取消全选");
-
                             isAllSelect = true;
                         } else {
                             for (int i = 0; i < noteBeanList.size(); i++) {
                                 positionSet.remove(i);
-                                noteBeanList.get(position).setChosen(false);
-                                mAdapter.notifyDataSetChanged();
+                                noteBeanList.get(i).setChosen(false);
                             }
+                            mAdapter.notifyDataSetChanged();
                             animatorForVisible();
                             isShow = true;
                             resetView();
@@ -168,16 +171,45 @@ public class MainActivity extends BaseActivity {
                             });
                             state = false;
                         }
-//                        setSelectStateText("取消全选", new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//
-//                            }
-//                        });
                     }
                 }, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this).setTitle("提示")
+                                .setMessage("将会删除选中便签").setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        dataSource.open();
+                                        positionSet.clear();
+                                        for(int i = noteBeanList.size() - 1; i >= 0; i--){
+                                            if(noteBeanList.get(i).isChosen()){
+                                                dataSource.deleteNote(noteBeanList.get(i).getId());
+                                                Log.e("id","" + i);
+                                                noteBeanList.remove(i);
+                                            }
+                                        }
+                                        mAdapter.notifyDataSetChanged();
+                                        animatorForVisible();
+                                        isShow = true;
+                                        resetView();
+                                        commonMode("便签", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Intent intent = new Intent();
+                                                intent.setClass(MainActivity.this, SearchActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        });
+                                        state = false;
+                                    }
+                                });
+                        dialog.show();
 
                     }
                 });
